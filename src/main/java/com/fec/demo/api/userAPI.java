@@ -1,5 +1,6 @@
 package com.fec.demo.api;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,20 @@ public class userAPI {
 	@Autowired
 	private UserService uService;
 
+
+
 	@GetMapping(value = "/api/user")
 	public List<User> finAll() {
 		return uService.listAll();
 	}
 
 	// create User; không truyền khóa chính
+	// đăng ký tài khoản mặc định khi đăng ký trạng thái sẽ là false
 	@PostMapping(value = "/api/user")
 	public User createUser(@RequestBody User obj) {
 		obj.setId(null);
+		obj.setNgaygianhap(new Date());
+		obj.setActive(false); // khi mới đăng ký thì trạng thái của tài khoản là false
 		System.out.println(obj.toString());
 		return uService.saveUser(obj);
 
@@ -42,7 +48,7 @@ public class userAPI {
 	}
 
 	// xóa tài khoản trả về một id đã bị xóa
-	@DeleteMapping(value = "/api/user/{id}")
+	@DeleteMapping(value = "/api/admin/user/{id}")
 	public long deleUser(@PathVariable(name = "id") Long id) {
 		return uService.delete(id);
 	}
@@ -51,7 +57,12 @@ public class userAPI {
 	@PutMapping(value = "/api/user/{id}")
 	public User updateUser(@RequestBody User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
+
 		return uService.saveUser(model);
+//		return model;
 
 	}
+	// api đăng nhập
+	
+	// api chuyển trạng thái kích hoạt tải khoản
 }

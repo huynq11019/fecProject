@@ -1,9 +1,9 @@
 package com.fec.demo.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +23,39 @@ public class UserService {
 
 	// thêm bản ghi
 	public User saveUser(User model) {
-		// giá trị truyền vào không được là null
+		// nếu id là null thì tạo moi còn không thì update
+		if (model.getId() == null) {
+			return repo.save(model);
+		}else {
+			User oldUser  = getByid(model.getId());
+			// chèn dữ liệu vào bản ghi mới
+			if (model.getFullname()== null) {
+				model.setFullname(oldUser.getFullname());
+			}
+			if (model.getEmail()== null) {
+				model.setEmail(oldUser.getEmail());
+			}
+			if (model.getPassword() == null) {
+				model.setPassword(oldUser.getPassword());
+			}
+			if (model.getGender() == null) {
+				model.setGender(oldUser.getGender());
+			}
+			if (model.getPhonenumber()==null) {
+				model.setPhonenumber(oldUser.getPhonenumber());
+			}
+			if (model.getAvatar() == null) {
+				model.setAvatar(oldUser.getAvatar());
+			}
 		
-		return repo.save(model);
+			//trạng thái active không được thay đổi 
+			model.setActive(oldUser.getActive());
+			model.setNgaygianhap(oldUser.getNgaygianhap());
+			
+			return repo.save(model);
+		}
+		
+		
 	}
 
 	// xóa bản ghi của user Nếu xóa khong thành công thì return -1
@@ -46,7 +76,12 @@ public class UserService {
 	}
 	public void update(User obj) {
 	
-	};
+	}
+
+
+
+
 	// tạo them phương thức đăng nhập
 	// phương thức actiive
+	// tìm kiếm người dùng
 }
