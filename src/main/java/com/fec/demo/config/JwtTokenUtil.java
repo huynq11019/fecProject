@@ -27,7 +27,7 @@ public class JwtTokenUtil implements Serializable {
     private  String JWT_SECRET ;
 
     //Thời gian có hiệu lực của chuỗi jwt
-    private final long JWT_EXPIRATION = 50*50*50;
+    private final long JWT_EXPIRATION = 50*50*50*50;
 	 
 
     // Tạo ra jwt từ thông tin user

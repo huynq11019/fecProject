@@ -37,5 +37,7 @@ public class User {
 	private String avatar;
 	@Column(name = "phonenumber")
 	private String phonenumber;
+	@Column(name="roleid")
+	private int roleid;
 	
 }
