@@ -63,7 +63,7 @@ public class userAPI {
 	}
 
 	// cập nhật user theo id
-	@PreAuthorize("isAuthenticated")
+//	@PreAuthorize("isAuthenticated")
 	@PutMapping(value = "/admin/user/{id}")
 	public User updateUser(@RequestBody User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
