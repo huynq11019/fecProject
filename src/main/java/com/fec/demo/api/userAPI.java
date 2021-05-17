@@ -50,14 +50,14 @@ public class userAPI {
 
 	// tìm user theo mã
 	@GetMapping(value = "/user/{id}")
-	@PreAuthorize("@appAuthorizer.authorize(authentication, 'FIND', this)")
+//	@PreAuthorize("@appAuthorizer.authorize(authentication, 'FIND', this)")
 	public User getUser(@PathVariable(name = "id") Long id) {
 		return uService.getByid(id);
 	}
 
 	// xóa tài khoản trả về một id đã bị xóa
 	@DeleteMapping(value = "/admin/user/{id}")
-	@PreAuthorize("@appAuthorizer.authorize(authentication, 'DELETE', this)")
+//	@PreAuthorize("@appAuthorizer.authorize(authentication, 'DELETE', this)")
 	public long deleUser(@PathVariable(name = "id") Long id) {
 		return uService.delete(id);
 	}
