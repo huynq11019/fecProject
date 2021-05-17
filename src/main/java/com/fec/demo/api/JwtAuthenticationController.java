@@ -1,16 +1,9 @@
 package com.fec.demo.api;
-import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +16,7 @@ import com.fec.demo.DTO.JwtResponse;
 import com.fec.demo.DTO.RandomStuff;
 import com.fec.demo.config.JwtTokenUtil;
 import com.fec.demo.service.CustomUserDetails;
+import com.fec.demo.service.JwtUserDetailsService;
 
 
 
@@ -37,7 +31,7 @@ public class JwtAuthenticationController {
 	private JwtTokenUtil jwtTokenUtil;
 
 	@Autowired
-	private UserDetailsService jwtInMemoryUserDetailsService;
+	private JwtUserDetailsService jwtInMemoryUserDetailsService;
 
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public JwtResponse authenticateUser(@RequestBody JwtRequest authenticationRequest) // dữ liệu từ request gửi lên

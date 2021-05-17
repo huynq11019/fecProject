@@ -1,9 +1,9 @@
 package com.fec.demo.config;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -32,17 +32,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		// configure AuthenticationManager so that it knows from where to load
-		// user for matching credentials
-		// Use BCryptPasswordEncoder
-		//Cung cáp userservice cho spring security
-		// cung cấp password encoder
+		// quản lý dữ liệu người dùng
+
 		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+
 	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		 // Password encoder, để Spring Security sử dụng mã hóa mật khẩu người dùng
+		// mã hóa mật khẩu
 		return new BCryptPasswordEncoder();
 	}
 
@@ -54,15 +52,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
-				// dont authenticate this particular request
-				.authorizeRequests().antMatchers("/authenticate","/api/test","/swagger-ui.html").permitAll().
+		// phân quyền và sử dụng hình thwucs đăng nhập
+		httpSecurity.csrf().disable().cors().disable();
+
+		// thực hiện xác thực với những req\
+		httpSecurity.authorizeRequests()
+
+				.antMatchers("*/admin/*").hasRole("ADMIN")
 				// // Tất cả các request khác đều cần phải xác thực mới được truy cập
-				anyRequest().authenticated().and().
-				// make sure we use stateless session; session won't be used to
-				// store user's state.
-				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+				.anyRequest().permitAll();
+
+		// phân quyền sử dụng
+//		httpSecurity.formLogin().loginPage("/auth/login/form")// chuyển đến địa chỉ trang login
+//				.loginProcessingUrl("/authenticate").defaultSuccessUrl("/api/test").failureUrl("/api/settest")
+//				.usernameParameter("phonenumber").passwordParameter("password");
+
+		// điều khiển lỗi truy cập không đúng vai trò
+		httpSecurity.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// Add a filter to validate the tokens with every request

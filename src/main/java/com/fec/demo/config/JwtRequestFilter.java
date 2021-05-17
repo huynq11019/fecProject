@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fec.demo.service.CustomUserDetails;
 import com.fec.demo.service.JwtUserDetailsService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				Long userId = jwtTokenUtil.getUserIdFromJWT(jwt);
 				// Lấy thông tin người dùng từ id 
 				// kiểm tra thằng vừa truy cập là thằng nào
-				UserDetails userDetails = jwtUserDetailsService.loadUserById(userId); // lấy thôn tin
+				UserDetails userDetails = jwtUserDetailsService.loadUserById(userId); // lấy thôn tin theo id
 				if (userDetails != null) {
 					// Nếu người dùng hợp lệ, set thông tin cho Seturity Context
 					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -54,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				}
 			}
 		} catch (Exception ex) {
-			log.error("failed on set user authentication", ex);
+			log.error("xác thực người dùng không thành công", ex);
 		}
 
 		chain.doFilter(request, response);
