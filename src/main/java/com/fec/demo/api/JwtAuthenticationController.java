@@ -19,6 +19,7 @@ import com.fec.demo.config.JwtTokenUtil;
 import com.fec.demo.service.CustomUserDetails;
 import com.fec.demo.service.JwtUserDetailsService;
 
+import io.swagger.annotations.ApiOperation;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @RestController
@@ -36,6 +37,7 @@ public class JwtAuthenticationController {
 	private JwtUserDetailsService jwtInMemoryUserDetailsService;
 
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+	@ApiOperation(value = "cho phép người dùng đăng nhập  ",notes = "đăng nhập theo só điện thoại và mặt khẩu và trả về 1 access token")
 	public JwtResponse authenticateUser(@RequestBody JwtRequest authenticationRequest) // dữ liệu từ request gửi lên
 			throws Exception {
 		// Xác thực từ username và password.

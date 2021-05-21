@@ -31,15 +31,15 @@ public class UserService {
 	PasswordEncoder passwordEncoder;
 
 	// lấy danh sách user
-	public ParentOutput<User>  listAll(int page,int limit, String sortBy, boolean order) {
+	public ParentOutput<User> listAll(int page, int limit, String sortBy, boolean order) {
 //		System.out.println(page +""+ limit);
-		
+
 		Direction direction = Direction.ASC;
 		if (order) {
 			direction = Direction.DESC;
 		}
 		Sort sort = Sort.by(direction, sortBy);
-		Pageable paging = PageRequest.of(page,limit,sort);
+		Pageable paging = PageRequest.of(page, limit, sort);
 		ParentOutput<User> result = new ParentOutput<User>();
 		result.setPage(page);
 		result.setListResult(repo.findAll(paging).getContent());
@@ -54,7 +54,7 @@ public class UserService {
 	}
 
 	// thêm bản ghi
-	public User saveUser(User model,  String token) {
+	public User saveUser(User model, String token) {
 		// hiển thị token
 		System.out.println(token);
 		// chuyển token sang id và lấy dối tượng
@@ -64,7 +64,7 @@ public class UserService {
 			return repo.save(model);
 		} else {
 			// kiểm tra có phải admin hay là người dùng hiện tại không
-			
+
 			{
 				User oldUser = getByid(model.getId());
 				// chèn dữ liệu vào bản ghi mới
@@ -122,7 +122,11 @@ public class UserService {
 
 	}
 
-	
+	public User activeUser(Long idUser, boolean isActive) {
+		User oldUser = getByid(idUser);
+		oldUser.setActive(isActive);
+		return repo.save(oldUser);
+	}
 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// kiểm tra User có tồn tại trong database không
