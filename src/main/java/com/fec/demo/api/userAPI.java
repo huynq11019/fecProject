@@ -19,9 +19,11 @@ import com.fec.demo.DTO.ParentOutput;
 import com.fec.demo.entity.User;
 import com.fec.demo.service.UserService;
 
+import io.swagger.annotations.ApiOperation;
+
 @CrossOrigin
 @RestController
-@RequestMapping
+//@RequestMapping
 public class userAPI {
 	@Autowired
 	private UserService uService;
@@ -38,6 +40,7 @@ public class userAPI {
 	// đăng ký tài khoản mặc định khi đăng ký trạng thái sẽ là false
 
 	@PostMapping(value = "/dangky")
+	@ApiOperation(value = "used to register account", notes = "nhập thông tin tài khoản vào đây để đăng ký tìa khoản")
 	public User createUser(@RequestBody User obj) {
 		System.out.println(obj.toString());
 		obj.setId(null);
@@ -61,16 +64,17 @@ public class userAPI {
 
 	public long deleUser(@PathVariable(name = "id") Long id) {
 
-		System.out.println("id vừa nhập vào "+id);
+		System.out.println("id vừa nhập vào " + id);
 		return uService.delete(id);
 //		return -1;
 	}
 
 	// cập nhật user theo id
 //	@PreAuthorize("isAuthenticated")
-	@PutMapping(value = "/admin/user/{id}")
+	@PutMapping(value = "/user/{id}")
 	public User updateUser(@RequestBody User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
+
 //		, @RequestHeader(name = "Authorization") String token
 		return uService.saveUser(model, null);
 //		return model;
@@ -78,5 +82,10 @@ public class userAPI {
 	}
 
 	// api chuyển trạng thái kích hoạt tải khoản
-
+	@PutMapping(value = "/admin/changeUser/{id}")
+	@ApiOperation(value = "mở khóa tài khoản", notes = "chức năng này cho phép admin có thể thay dổi trạng thái của tài khoản")
+	public User setactive(Long id,boolean isActive) {
+		System.out.println("thay đổi trạng thái của tài khoản có id "+ id);
+		return uService.activeUser(id, isActive);
+	}
 }
