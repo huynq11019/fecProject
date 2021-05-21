@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fec.demo.service.JwtUserDetailsService;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -25,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	@Autowired
-	private UserDetailsService jwtUserDetailsService;
+	private JwtUserDetailsService jwtUserDetailsService;
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
@@ -53,12 +55,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// phân quyền và sử dụng hình thwucs đăng nhập
-		httpSecurity.csrf().disable().cors().disable();
+		httpSecurity.csrf().disable().cors();
 
 		// thực hiện xác thực với những req\
 		httpSecurity.authorizeRequests()
 
-				.antMatchers("*/admin/*").hasRole("ADMIN")
+				.antMatchers("/admin/**").authenticated()	
 				// // Tất cả các request khác đều cần phải xác thực mới được truy cập
 				.anyRequest().permitAll();
 

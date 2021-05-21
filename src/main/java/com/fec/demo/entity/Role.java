@@ -11,8 +11,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 @Entity
 @Table(name="roles")
+@Data
+
 public class Role {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +25,6 @@ private Long id;
 @Column(name = "name")
 private String name;
 @JsonIgnore
-@OneToMany(mappedBy = "role")
+@OneToMany(mappedBy = "role1")
 List<UserRole> UserRole;
 }
