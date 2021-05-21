@@ -55,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				}
 			}
 		} catch (Exception ex) {
-			log.error("xác thực người dùng không thành công", ex);
+			log.error("xác thực người dùng không thành công"+ ex.toString());
 		}
 
 		chain.doFilter(request, response);

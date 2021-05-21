@@ -21,7 +21,7 @@ import com.fec.demo.service.UserService;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class userAPI {
 	@Autowired
 	private UserService uService;
@@ -56,10 +56,14 @@ public class userAPI {
 	}
 
 	// xóa tài khoản trả về một id đã bị xóa
+//	 @PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(value = "/admin/user/{id}")
-//	@PreAuthorize("@appAuthorizer.authorize(authentication, 'DELETE', this)")
+
 	public long deleUser(@PathVariable(name = "id") Long id) {
+
+		System.out.println("id vừa nhập vào "+id);
 		return uService.delete(id);
+//		return -1;
 	}
 
 	// cập nhật user theo id

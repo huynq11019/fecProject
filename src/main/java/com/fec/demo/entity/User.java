@@ -13,16 +13,16 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
+@Data 
 @Entity
 @Table(name = "users")
-@Data @Getter @Setter
+
 public class User {
 	@Id
-	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(name = "fullname")
@@ -41,8 +41,9 @@ public class User {
 	private String avatar;
 	@Column(name = "phonenumber")
 	private String phonenumber;
-	@JsonIgnore
-	@OneToMany(mappedBy = "user")
-	private List<UserRole> listRole;
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "user")
+//	private List<UserRole> roleuser;
+	
 	
 }
