@@ -8,6 +8,6 @@ public class ParentOutput<T> {
 private int page;
 private int totalPage;
 private List<T> listResult;
-private boolean frist;
+private boolean first;
 private boolean last;
 }
