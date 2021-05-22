@@ -39,13 +39,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 		try {
 			
 //			System.out.println(user.toString());
-//			String password = user.getPassword();
+			String password = user.getPassword();
 //			String []role = user.getRoleuser().stream()
 //					.map(err->err.getRole().getId())
 //					.collect(Collectors.toList()).toArray(new String[0]);
 			
 			return new CustomUserDetails(user);
-//			return User.withUsername(username).password(password).build();
+//		     return User.withUsername(username).roles("USER").password(password).build();
 		
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(username +"not found!");

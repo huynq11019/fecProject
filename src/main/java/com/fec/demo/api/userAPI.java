@@ -2,6 +2,8 @@ package com.fec.demo.api;
 
 import java.util.Date;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,7 +56,6 @@ public class userAPI {
 
 	// tìm user theo mã
 	@GetMapping(value = "/user/{id}")
-//	@PreAuthorize("@appAuthorizer.authorize(authentication, 'FIND', this)")
 	public User getUser(@PathVariable(name = "id") Long id) {
 		return uService.getByid(id);
 	}
@@ -61,7 +63,7 @@ public class userAPI {
 	// xóa tài khoản trả về một id đã bị xóa
 //	 @PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(value = "/admin/user/{id}")
-
+	@PreAuthorize("hasRole('ADMIN')")
 	public long deleUser(@PathVariable(name = "id") Long id) {
 
 		System.out.println("id vừa nhập vào " + id);
@@ -72,7 +74,7 @@ public class userAPI {
 	// cập nhật user theo id
 //	@PreAuthorize("isAuthenticated")
 	@PutMapping(value = "/user/{id}")
-	public User updateUser(@RequestBody User model, @PathVariable(name = "id") Long id) {
+	public User updateUser(@RequestBody(required = true) User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
 
 //		, @RequestHeader(name = "Authorization") String token
@@ -84,8 +86,9 @@ public class userAPI {
 	// api chuyển trạng thái kích hoạt tải khoản
 	@PutMapping(value = "/admin/changeUser/{id}")
 	@ApiOperation(value = "mở khóa tài khoản", notes = "chức năng này cho phép admin có thể thay dổi trạng thái của tài khoản")
-	public User setactive(Long id,boolean isActive) {
-		System.out.println("thay đổi trạng thái của tài khoản có id "+ id);
+	public User setactive( @PathVariable(name = "id") Long id,@RequestParam(required = true) Boolean isActive) {
+		System.out.println("thay đổi trạng thái của tài khoản có id " + id+ isActive);
 		return uService.activeUser(id, isActive);
+//		return null;
 	}
 }
