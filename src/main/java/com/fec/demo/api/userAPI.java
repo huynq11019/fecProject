@@ -99,19 +99,21 @@ public class userAPI {
 	}
 	@GetMapping(value = "/user/getUserbytoken")
 	@ApiOperation(value = "get thông tin user bằng AccessToken", notes = "truyền token vào header và truy cập vào đường dẫn ")
-	public User getUserByToken(@RequestHeader(name = "Authorization") String bearerToken) {
+	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) {
 		try {
 			String  jwt = null ;
 
-			// Kiểm tra xem header Authorization có chứa thông tin jwt không
-			if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-				jwt= bearerToken.substring(7);
-			}
-			if (StringUtils.hasText(jwt) && jwtTokenUtil.validateToken(jwt)) {
-				Long userId = jwtTokenUtil.getUserIdFromJWT(jwt);
-				// Lấy thông tin người dùng từ id 
-				// kiểm tra thằng vừa truy cập là thằng nào
-			return uService.getByid(userId);
+			if (bearerToken != null) {
+				// Kiểm tra xem header Authorization có chứa thông tin jwt không
+				if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+					jwt= bearerToken.substring(7);
+				}
+				if (StringUtils.hasText(jwt) && jwtTokenUtil.validateToken(jwt)) {
+					Long userId = jwtTokenUtil.getUserIdFromJWT(jwt);
+					// Lấy thông tin người dùng từ id 
+					// kiểm tra thằng vừa truy cập là thằng nào
+				return uService.getByid(userId);
+				}
 			}
 			System.out.println("token error");
 		} catch (Exception e) {
