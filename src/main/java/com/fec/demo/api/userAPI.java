@@ -2,24 +2,27 @@ package com.fec.demo.api;
 
 import java.util.Date;
 
-import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fec.demo.DTO.ParentOutput;
+import com.fec.demo.config.JwtTokenUtil;
 import com.fec.demo.entity.User;
+import com.fec.demo.service.JwtUserDetailsService;
 import com.fec.demo.service.UserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +33,10 @@ import io.swagger.annotations.ApiOperation;
 public class userAPI {
 	@Autowired
 	private UserService uService;
-
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	private JwtUserDetailsService jwtUserDetailsService;
 	@GetMapping(value = "/user")
 	public ParentOutput<User> finAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int limit, @RequestParam(defaultValue = "id") String sorby,
@@ -91,4 +97,32 @@ public class userAPI {
 		return uService.activeUser(id, isActive);
 //		return null;
 	}
+	@GetMapping(value = "/user/getUserbytoken")
+	@ApiOperation(value = "get thông tin user bằng AccessToken", notes = "truyền token vào header và truy cập vào đường dẫn ")
+	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) {
+		try {
+			String  jwt = null ;
+
+			if (bearerToken != null) {
+				// Kiểm tra xem header Authorization có chứa thông tin jwt không
+				if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+					jwt= bearerToken.substring(7);
+				}
+				if (StringUtils.hasText(jwt) && jwtTokenUtil.validateToken(jwt)) {
+					Long userId = jwtTokenUtil.getUserIdFromJWT(jwt);
+					// Lấy thông tin người dùng từ id 
+					// kiểm tra thằng vừa truy cập là thằng nào
+				return uService.getByid(userId);
+				}
+			}
+			System.out.println("token error");
+		} catch (Exception e) {
+			System.out.println("xảy ra lỗi với access token "+e);
+
+		}
+		
+		return null;
+		
+	}
+
 }
