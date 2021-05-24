@@ -80,8 +80,8 @@ public class UserService {
 				} else {
 					model.setPassword(passwordEncoder.encode(model.getPassword()));
 				}
-				if (model.getGender() == null) {
-					model.setGender(oldUser.getGender());
+				if (model.getIsMale() == null) {
+					model.setIsMale(oldUser.getIsMale());
 				}
 				if (model.getPhonenumber() == null) {
 					model.setPhonenumber(oldUser.getPhonenumber());
@@ -120,7 +120,10 @@ public class UserService {
 	}
 
 	public User getByid(Long id) {
-		return repo.findById(id).get();
+		User u = repo.findById(id).get();
+		System.out.println(u.getRoleuser());
+		
+		return u;
 
 	}
 
