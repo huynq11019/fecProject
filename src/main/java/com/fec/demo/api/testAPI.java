@@ -11,7 +11,7 @@ import com.fec.demo.DTO.TestDTO;
 
 @Controller
 public class testAPI {
-	@RequestMapping( "/admin/settest")
+	@RequestMapping( "/api/admin/settest")
 	public String createTest() {
 		System.out.println("test login");
 		return "login";
