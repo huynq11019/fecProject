@@ -2,6 +2,8 @@ package com.fec.demo.entity;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -50,14 +52,15 @@ public class User {
 	private String avatar;
 	@Column(name = "phonenumber")
 	private String phonenumber;
-	@JsonIgnore
-	 @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//	@JsonIgnore
+	 @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	// Quan hệ n-n với đối tượng ở dưới (User) (1 người có nhiều role)
 	@EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
 	@ToString.Exclude // Khoonhg sử dụng trong toString()
 	@JoinTable(name = "userrole", // tạo một join table có tên là userrole
 			joinColumns = { @JoinColumn(name = "userid") } // TRong đó, khóa ngoại chính là userid trỏ tới class hiện tại (user)
 	, inverseJoinColumns = { @JoinColumn(name = "roleid") })
-	 private Collection<Role> roleuser;
+	 private Set<Role> roleuser;
+	
 
 }

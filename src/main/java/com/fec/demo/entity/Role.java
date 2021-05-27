@@ -1,6 +1,8 @@
 package com.fec.demo.entity;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,12 +33,12 @@ public class Role {
 	private Long id;
 	@Column(name = "name")
 	private String name;
-	@JsonIgnore
-//mappedBy trỏ tới tên biến roleuser ở trong User.
-	@ManyToMany(mappedBy = "roleuser")
-//LAZY để tránh việc truy xuất dữ liệu không cần thiết. Lúc nào cần thì mới query
-	@EqualsAndHashCode.Exclude
-	@Exclude
-	private Collection<User> UserRole;
+//	@JsonIgnore
+////mappedBy trỏ tới tên biến roleuser ở trong User.
+//	@ManyToMany(mappedBy = "roleuser")
+////LAZY để tránh việc truy xuất dữ liệu không cần thiết. Lúc nào cần thì mới query
+//	@EqualsAndHashCode.Exclude
+//	@Exclude
+//	private Set<User> UserRole;
 
 }

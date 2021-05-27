@@ -59,9 +59,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// thực hiện xác thực với những req\
 		httpSecurity.authorizeRequests()
 
-				.antMatchers("/admin/**").authenticated()	
+				.antMatchers("/admin/**").hasAuthority("ADMIN")	
+				.antMatchers("/authenticate","/dangky").permitAll()
 				// // Tất cả các request khác đều cần phải xác thực mới được truy cập
-				.anyRequest().permitAll();
+				.anyRequest().authenticated();
 
 		// phân quyền sử dụng
 //		httpSecurity.formLogin().loginPage("/auth/login/form")// chuyển đến địa chỉ trang login

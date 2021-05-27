@@ -8,7 +8,7 @@ import lombok.Data;
 public class JwtResponse  {
 
 	private String accessToken;
-	private String tokenType = "Bearer";
+	private String tokenType = "FEC";
 	public JwtResponse(String accessToken) {
 		super();
 		this.accessToken = accessToken;

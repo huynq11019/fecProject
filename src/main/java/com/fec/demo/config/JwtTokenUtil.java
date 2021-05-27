@@ -31,13 +31,15 @@ public class JwtTokenUtil implements Serializable {
 
 	// Tạo ra jwt từ thông tin user
 	public String generateToken(CustomUserDetails userDetails) {
+		System.out.println("34 tokenutil"+userDetails);
+//		log.debug(userDetails.getUsername()+ userDetails.getPassword());
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
 		// Tạo chuỗi json web token từ id của user.
-		return Jwts.builder().setSubject(Long.toString(userDetails.getUser().getId())).setIssuedAt(now) // thời gian
-																										// build token
+		return Jwts.builder().setSubject(Long.toString(userDetails.getUserId())).setIssuedAt(now) // thời gian										// build token
 				.setExpiration(expiryDate) // ngày hết hạn
 				.signWith(SignatureAlgorithm.HS512, JWT_SECRET)// kiểm băm
+				
 				.compact();
 	}
 

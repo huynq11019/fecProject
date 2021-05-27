@@ -1,23 +1,17 @@
 package com.fec.demo.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-import javax.naming.ldap.SortControl;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fec.demo.DTO.ParentOutput;
 import com.fec.demo.entity.User;
@@ -120,8 +114,10 @@ public class UserService {
 	}
 
 	public User getByid(Long id) {
-		User u = repo.findById(id).get();
-		System.out.println(u.getRoleuser());
+		User u = repo.findOneById(id);
+//		if (u.getRoleuser().size()>0) {
+//			System.out.println("user service+ "+ u.getRoleuser());
+//		}
 		
 		return u;
 
@@ -139,7 +135,7 @@ public class UserService {
 		return null;
 	}
 
-	// tạo them phương thức đăng nhập
+	
 	// phương thức actiive
 	// tìm kiếm người dùng
 }

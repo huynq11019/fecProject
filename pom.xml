@@ -64,7 +64,12 @@
 			<version>1.18.20</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<!-- cailm set -->
+		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>8.8</version>
+		</dependency>
 
 
 		<dependency>

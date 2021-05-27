@@ -26,9 +26,11 @@ import com.fec.demo.service.JwtUserDetailsService;
 import com.fec.demo.service.UserService;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @CrossOrigin
 @RestController
+@Slf4j
 //@RequestMapping
 public class userAPI {
 	@Autowired
@@ -67,7 +69,7 @@ public class userAPI {
 	}
 
 	// xóa tài khoản trả về một id đã bị xóa
-//	 @PreAuthorize("hasRole('ADMIN')")
+	@ApiOperation(value = "truyền id người dùng vào để xóa cứng tài khoản", notes = "nếu xóa thành công trả về ID của người dùng đã xóa nếu không trả về kết quả là -1")
 	@DeleteMapping(value = "/admin/user/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public long deleUser(@PathVariable(name = "id") Long id) {
@@ -82,8 +84,6 @@ public class userAPI {
 	@PutMapping(value = "/user/{id}")
 	public User updateUser(@RequestBody(required = true) User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
-
-//		, @RequestHeader(name = "Authorization") String token
 		return uService.saveUser(model, null);
 //		return model;
 
@@ -115,9 +115,11 @@ public class userAPI {
 				return uService.getByid(userId);
 				}
 			}
-			System.out.println("token error");
+			log.error("xảy ra lỗi với access token ");
+			
 		} catch (Exception e) {
-			System.out.println("xảy ra lỗi với access token "+e);
+//			System.out.println("xảy ra lỗi với access token "+e);
+			log.error("xảy ra lỗi với access token "+e);
 
 		}
 		
