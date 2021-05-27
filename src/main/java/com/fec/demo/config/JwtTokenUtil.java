@@ -50,7 +50,6 @@ public class JwtTokenUtil implements Serializable {
 					.setSigningKey(JWT_SECRET)
 					.parseClaimsJws(token)
 					.getBody();// lấy nội dung
-//user id = claims.getsubject
 			return Long.parseLong(claims.getSubject());
 		}
 		return null;

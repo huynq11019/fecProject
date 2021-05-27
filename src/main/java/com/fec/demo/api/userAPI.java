@@ -105,8 +105,8 @@ public class userAPI {
 
 			if (bearerToken != null) {
 				// Kiểm tra xem header Authorization có chứa thông tin jwt không
-				if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-					jwt= bearerToken.substring(7);
+				if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("FEC ")) {
+					jwt= bearerToken.substring(4);
 				}
 				if (StringUtils.hasText(jwt) && jwtTokenUtil.validateToken(jwt)) {
 					Long userId = jwtTokenUtil.getUserIdFromJWT(jwt);
