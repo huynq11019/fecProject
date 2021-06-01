@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin
 @RestController
 @Slf4j
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class userAPI {
 	@Autowired
 	private UserService uService;
@@ -40,7 +40,7 @@ public class userAPI {
 	private JwtTokenUtil jwtTokenUtil;
 	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
-	@GetMapping(value = "/user")
+	@GetMapping(value = "/api/user")
 	public ParentOutput<User> finAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int limit, @RequestParam(defaultValue = "id") String sorby,
 			@RequestParam(defaultValue = "false") boolean order) {
@@ -64,14 +64,14 @@ public class userAPI {
 	}
 
 	// tìm user theo mã
-	@GetMapping(value = "/user/{id}")
+	@GetMapping(value = "/api/user/{id}")
 	public User getUser(@PathVariable(name = "id") Long id) {
 		return uService.getByid(id);
 	}
 
 	// xóa tài khoản trả về một id đã bị xóa
 	@ApiOperation(value = "truyền id người dùng vào để xóa cứng tài khoản", notes = "nếu xóa thành công trả về ID của người dùng đã xóa nếu không trả về kết quả là -1")
-	@DeleteMapping(value = "/admin/user/{id}")
+	@DeleteMapping(value = "/api/admin/user/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public long deleUser(@PathVariable(name = "id") Long id) {
 
@@ -82,7 +82,7 @@ public class userAPI {
 
 	// cập nhật user theo id
 //	@PreAuthorize("isAuthenticated")
-	@PutMapping(value = "/user/{id}")
+	@PutMapping(value = "/api/user/{id}")
 	public User updateUser(@RequestBody(required = true) User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
 		return uService.saveUser(model, null);
@@ -91,14 +91,14 @@ public class userAPI {
 	}
 
 	// api chuyển trạng thái kích hoạt tải khoản
-	@PutMapping(value = "/admin/changeUser/{id}")
+	@PutMapping(value = "/api/admin/changeUser/{id}")
 	@ApiOperation(value = "mở khóa tài khoản", notes = "chức năng này cho phép admin có thể thay dổi trạng thái của tài khoản")
 	public User setactive( @PathVariable(name = "id") Long id,@RequestParam(required = true) Boolean isActive) {
 		System.out.println("thay đổi trạng thái của tài khoản có id " + id+ isActive);
 		return uService.activeUser(id, isActive);
 //		return null;
 	}
-	@GetMapping(value = "/user/getUserbytoken")
+	@GetMapping(value = "/api/user/getUserbytoken")
 	@ApiOperation(value = "get thông tin user bằng AccessToken", notes = "truyền token vào header và truy cập vào đường dẫn ")
 	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) {
 		try {
