@@ -52,7 +52,7 @@ public class User {
 	private String avatar;
 	@Column(name = "phonenumber")
 	private String phonenumber;
-//	@JsonIgnore
+	@JsonIgnore
 	 @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	// Quan hệ n-n với đối tượng ở dưới (User) (1 người có nhiều role)
 	@EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
