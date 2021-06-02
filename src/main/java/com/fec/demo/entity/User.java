@@ -1,7 +1,9 @@
 package com.fec.demo.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +17,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -52,15 +59,34 @@ public class User {
 	private String avatar;
 	@Column(name = "phonenumber")
 	private String phonenumber;
+//	@JsonIgnore
+//	 @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//	// Quan hệ n-n với đối tượng ở dưới (User) (1 người có nhiều role)
+//	@EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
+//	@ToString.Exclude // Khoonhg sử dụng trong toString()
+//	@JoinTable(name = "userrole", // tạo một join table có tên là userrole
+//			joinColumns = { @JoinColumn(name = "userid") } // TRong đó, khóa ngoại chính là userid trỏ tới class hiện tại (user)
+//	, inverseJoinColumns = { @JoinColumn(name = "roleid") })
 	@JsonIgnore
-	 @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	// Quan hệ n-n với đối tượng ở dưới (User) (1 người có nhiều role)
-	@EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
-	@ToString.Exclude // Khoonhg sử dụng trong toString()
-	@JoinTable(name = "userrole", // tạo một join table có tên là userrole
-			joinColumns = { @JoinColumn(name = "userid") } // TRong đó, khóa ngoại chính là userid trỏ tới class hiện tại (user)
-	, inverseJoinColumns = { @JoinColumn(name = "roleid") })
-	 private Set<Role> roleuser;
+	@OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
+	 private List<UserRole> roleuser ;
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", fullname=" + fullname + ", email=" + email + ", password=" + password + ", isMale="
+				+ isMale + ", active=" + active + ", ngaygianhap=" + ngaygianhap + ", avatar=" + avatar
+				+ ", phonenumber=" + phonenumber + "]";
+	}
 	
+	@Transient
+	public List<GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		if (this.getRoleuser()!= null) {
+			for (UserRole usersRoles:this.roleuser) {
+				authorities.add(new SimpleGrantedAuthority(usersRoles.getRoles().getName()));
+			}
+		}
+		
+		return authorities;
+	}
 
 }
