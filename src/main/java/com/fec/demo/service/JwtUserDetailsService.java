@@ -38,14 +38,14 @@ public class JwtUserDetailsService implements UserDetailsService {
 //				System.out.println("không đọc được role" + e);
 //			}
 			// converse
-			 List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
-			
-			 for(Role role : user.getRoleuser()) {
-				    System.out.println("44 jwt detail"+role.getName());
-				    GrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-	                grantList.add(authority);
-				}
-			return new CustomUserDetails(user.getId(), user.getPhonenumber(), user.getPassword(), grantList);
+//			 List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
+//			 grantList.add(new SimpleGrantedAuthority("ADMIN"));
+//			 for(Role role : user.getRoleuser()) {
+//				    System.out.println("44 jwt detail"+role.getName());
+//				    GrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
+//	                grantList.add(authority);
+//				}
+			return new CustomUserDetails(user.getId(), user.getPhonenumber(), user.getPassword(), user.getAuthorities());
 		}
 	}
 
@@ -56,14 +56,16 @@ public class JwtUserDetailsService implements UserDetailsService {
 		if (user == null) {
 			throw new UsernameNotFoundException("Không tìm thấy username: " + username);
 		}
+//		System.out.println(user.getFullname());
 		try {
-			 List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
-			 for(Role role : user.getRoleuser()) {
-				    System.out.println("61 jwt detail "+role);
-				    GrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-	                grantList.add(authority);
-				}
-			return new CustomUserDetails(user.getId(), user.getPhonenumber(), user.getPassword(), grantList);
+//			 List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
+//			 grantList.add(new SimpleGrantedAuthority("ADMIN"));
+//			 for(Role role : user.getRoleuser()) {
+//				    System.out.println("61 jwt detail "+role);
+//				    GrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
+//	                grantList.add(authority);
+//				}
+			return new CustomUserDetails(user.getId(), user.getPhonenumber(), user.getPassword(), user.getAuthorities());
 
 
 		} catch (Exception e) {

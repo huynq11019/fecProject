@@ -1,14 +1,17 @@
 package com.fec.demo.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,11 +30,13 @@ public class Role implements Serializable{
 private Long id;
 @Column(name = "name")
 private String name;
+//@JsonIgnore
+////mappedBy trỏ tới tên biến roleuser ở trong User.
+//@ManyToMany(mappedBy = "roleuser")
+////LAZY để tránh việc truy xuất dữ liệu không cần thiết. Lúc nào cần thì mới query
+//@EqualsAndHashCode.Exclude
+//@Exclude
 @JsonIgnore
-//mappedBy trỏ tới tên biến roleuser ở trong User.
-@ManyToMany(mappedBy = "roleuser")
-//LAZY để tránh việc truy xuất dữ liệu không cần thiết. Lúc nào cần thì mới query
-@EqualsAndHashCode.Exclude
-@Exclude
-private Set<User> UserRole;
+@OneToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+private List<UserRole> UserRole;
 }
