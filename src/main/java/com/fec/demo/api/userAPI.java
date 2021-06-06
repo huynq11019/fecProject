@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fec.demo.DTO.ParentOutput;
 import com.fec.demo.config.JwtTokenUtil;
 import com.fec.demo.entity.User;
+import com.fec.demo.entity.UserRole;
 import com.fec.demo.service.JwtUserDetailsService;
+import com.fec.demo.service.UserRoleService;
 import com.fec.demo.service.UserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -38,8 +40,10 @@ public class userAPI {
 	private UserService uService;
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+	private UserRoleService urService;
 	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
+
 	@GetMapping(value = "/api/user")
 	public ParentOutput<User> finAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int limit, @RequestParam(defaultValue = "id") String sorby,
@@ -57,7 +61,7 @@ public class userAPI {
 		System.out.println(obj.toString());
 		obj.setId(null);
 		obj.setNgaygianhap(new Date());
-		obj.setActive(false); // khi mới đăng ký thì trạng thái của tài khoản là false
+		obj.setActive(true); // khi mới đăng ký thì trạng thái của tài khoản là false
 		System.out.println(obj.toString());
 		return uService.saveUser(obj, null); // token == null
 
@@ -93,39 +97,47 @@ public class userAPI {
 	// api chuyển trạng thái kích hoạt tải khoản
 	@PutMapping(value = "/api/admin/changeUser/{id}")
 	@ApiOperation(value = "mở khóa tài khoản", notes = "chức năng này cho phép admin có thể thay dổi trạng thái của tài khoản")
-	public User setactive( @PathVariable(name = "id") Long id,@RequestParam(required = true) Boolean isActive) {
-		System.out.println("thay đổi trạng thái của tài khoản có id " + id+ isActive);
+	public User setactive(@PathVariable(name = "id") Long id, @RequestParam(required = true) Boolean isActive) {
+		System.out.println("thay đổi trạng thái của tài khoản có id " + id + isActive);
 		return uService.activeUser(id, isActive);
 //		return null;
 	}
+
 	@GetMapping(value = "/api/user/getUserbytoken")
 	@ApiOperation(value = "get thông tin user bằng AccessToken", notes = "truyền token vào header và truy cập vào đường dẫn ")
 	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) {
 		try {
-			String  jwt = null ;
+			String jwt = null;
 
 			if (bearerToken != null) {
 				// Kiểm tra xem header Authorization có chứa thông tin jwt không
 				if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("FEC ")) {
-					jwt= bearerToken.substring(4);
+					jwt = bearerToken.substring(4);
 				}
 				if (StringUtils.hasText(jwt) && jwtTokenUtil.validateToken(jwt)) {
 					Long userId = jwtTokenUtil.getUserIdFromJWT(jwt);
-					// Lấy thông tin người dùng từ id 
+					// Lấy thông tin người dùng từ id
 					// kiểm tra thằng vừa truy cập là thằng nào
-				return uService.getByid(userId);
+					return uService.getByid(userId);
 				}
 			}
 			log.error("xảy ra lỗi với access token ");
-			
+
 		} catch (Exception e) {
 //			System.out.println("xảy ra lỗi với access token "+e);
-			log.error("xảy ra lỗi với access token "+e);
+			log.error("xảy ra lỗi với access token " + e);
 
 		}
-		
+
 		return null;
-		
+
 	}
 
+	@PostMapping("/api/admin/phanquyen")
+	@ApiOperation(value = "phân quyền", notes = "chức năng này cho phép admin có thể phân quyền cho cách thành viên ")
+	public User phanquyen(UserRole usertole) {
+//		urService.getallUserByid();
+		UserRole ur = urService.saveRoleUser(usertole);
+		return ur.getUsers();
+	}
 }
