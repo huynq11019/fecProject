@@ -27,6 +27,7 @@ import com.fec.demo.entity.UserRole;
 import com.fec.demo.service.JwtUserDetailsService;
 import com.fec.demo.service.UserRoleService;
 import com.fec.demo.service.UserService;
+import com.fec.demo.util.CustomUserException;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -57,13 +58,18 @@ public class userAPI {
 
 	@PostMapping(value = "/dangky")
 	@ApiOperation(value = "used to register account", notes = "nhập thông tin tài khoản vào đây để đăng ký tìa khoản")
-	public User createUser(@RequestBody User obj) {
+	public User createUser(@RequestBody User obj) throws CustomUserException {
 		System.out.println(obj.toString());
 		obj.setId(null);
 		obj.setNgaygianhap(new Date());
 		obj.setActive(true); // khi mới đăng ký thì trạng thái của tài khoản là false
 		System.out.println(obj.toString());
-		return uService.saveUser(obj, null); // token == null
+		
+		User newUser = uService.saveUser(obj);
+		if (newUser == null) {
+			throw new CustomUserException("số điện thoại đã được đăng ký trong hệ thống");
+		}
+		return newUser; // token == null
 
 	}
 
@@ -89,7 +95,7 @@ public class userAPI {
 	@PutMapping(value = "/api/user/{id}")
 	public User updateUser(@RequestBody(required = true) User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
-		return uService.saveUser(model, null);
+		return uService.saveUser(model);
 //		return model;
 
 	}
@@ -98,6 +104,7 @@ public class userAPI {
 	@PutMapping(value = "/api/admin/changeUser/{id}")
 	@ApiOperation(value = "mở khóa tài khoản", notes = "chức năng này cho phép admin có thể thay dổi trạng thái của tài khoản")
 	public User setactive(@PathVariable(name = "id") Long id, @RequestParam(required = true) Boolean isActive) {
+		// địa chỉ id phải trùng
 		System.out.println("thay đổi trạng thái của tài khoản có id " + id + isActive);
 		return uService.activeUser(id, isActive);
 //		return null;
@@ -105,7 +112,7 @@ public class userAPI {
 
 	@GetMapping(value = "/api/user/getUserbytoken")
 	@ApiOperation(value = "get thông tin user bằng AccessToken", notes = "truyền token vào header và truy cập vào đường dẫn ")
-	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) {
+	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) throws CustomUserException {
 		try {
 			String jwt = null;
 
@@ -129,7 +136,8 @@ public class userAPI {
 
 		}
 
-		return null;
+//		return null;
+		throw new CustomUserException("Thông tin Token không chính xác");
 
 	}
 
