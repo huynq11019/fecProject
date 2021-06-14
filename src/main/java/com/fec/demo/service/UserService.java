@@ -24,7 +24,8 @@ public class UserService {
 	private IuserRepository repo;
 	@Autowired
 	PasswordEncoder passwordEncoder;
-
+	@Autowired
+	private JwtUserDetailsService uds;
 	// lấy danh sách user
 	public ParentOutput<User> listAll(int page, int limit, String sortBy, boolean order) {
 //		System.out.println(page +""+ limit);
@@ -49,13 +50,19 @@ public class UserService {
 	}
 
 	// thêm bản ghi
-	public User saveUser(User model, String token) {
+	public User saveUser(User model) {
 		// hiển thị token
-		System.out.println(token);
+		//System.out.println(token);
 		// chuyển token sang id và lấy dối tượng
 		// nếu id là null thì tạo moi còn không thì update
 		if (model.getId() == null) {
 			model.setPassword(passwordEncoder.encode(model.getPassword()));
+			// kiểm tra sự tồn tại của user
+			if(uds.loadUserByUsername(model.getPhonenumber())!= null)
+			{
+				
+				return null;
+			}
 			return repo.save(model);
 		} else {
 			// kiểm tra có phải admin hay là người dùng hiện tại không
@@ -118,7 +125,7 @@ public class UserService {
 //		if (u.getRoleuser().size()>0) {
 //			System.out.println("user service+ "+ u.getRoleuser());
 //		}
-		
+
 		return u;
 
 	}
@@ -135,7 +142,6 @@ public class UserService {
 		return null;
 	}
 
-	
 	// phương thức actiive
 	// tìm kiếm người dùng
 }

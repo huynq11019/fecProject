@@ -59,6 +59,9 @@ public class User {
 	private String avatar;
 	@Column(name = "phonenumber")
 	private String phonenumber;
+	@Column(name = "birthday")
+	private Long birthday ;
+	
 //	@JsonIgnore
 //	 @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //	// Quan hệ n-n với đối tượng ở dưới (User) (1 người có nhiều role)
