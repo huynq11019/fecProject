@@ -2,11 +2,8 @@ package com.fec.demo.api;
 
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,10 +20,11 @@ import com.fec.demo.DTO.ParentOutput;
 import com.fec.demo.config.JwtTokenUtil;
 import com.fec.demo.entity.User;
 import com.fec.demo.entity.UserRole;
+import com.fec.demo.exceotion.ErrorException;
+import com.fec.demo.exceotion.MyExceptionHandler;
 import com.fec.demo.service.JwtUserDetailsService;
 import com.fec.demo.service.UserRoleService;
 import com.fec.demo.service.UserService;
-import com.fec.demo.util.CustomUserException;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -58,16 +55,18 @@ public class userAPI {
 
 	@PostMapping(value = "/dangky")
 	@ApiOperation(value = "used to register account", notes = "nhập thông tin tài khoản vào đây để đăng ký tìa khoản")
-	public User createUser(@RequestBody User obj) throws CustomUserException {
+	public User createUser(@RequestBody User obj) {
 		System.out.println(obj.toString());
 		obj.setId(null);
 		obj.setNgaygianhap(new Date());
 		obj.setActive(true); // khi mới đăng ký thì trạng thái của tài khoản là false
 		System.out.println(obj.toString());
-		
+
 		User newUser = uService.saveUser(obj);
 		if (newUser == null) {
-			throw new CustomUserException("số điện thoại đã được đăng ký trong hệ thống");
+//			throw new CustomUserException("số điện thoại đã được đăng ký trong hệ thống");
+//			return null;
+			throw new ErrorException("user đã tồn tại trong hệ thống");
 		}
 		return newUser; // token == null
 
@@ -76,7 +75,11 @@ public class userAPI {
 	// tìm user theo mã
 	@GetMapping(value = "/api/user/{id}")
 	public User getUser(@PathVariable(name = "id") Long id) {
-		return uService.getByid(id);
+		User us = uService.getByid(id);
+		if (us == null) {
+			throw new ErrorException("User không tồn tại trong hệ thống");
+		}
+		return us;
 	}
 
 	// xóa tài khoản trả về một id đã bị xóa
@@ -95,7 +98,9 @@ public class userAPI {
 	@PutMapping(value = "/api/user/{id}")
 	public User updateUser(@RequestBody(required = true) User model, @PathVariable(name = "id") Long id) {
 		model.setId(id);
-		return uService.saveUser(model);
+		User us = uService.saveUser(model);
+
+		return us;
 //		return model;
 
 	}
@@ -112,7 +117,7 @@ public class userAPI {
 
 	@GetMapping(value = "/api/user/getUserbytoken")
 	@ApiOperation(value = "get thông tin user bằng AccessToken", notes = "truyền token vào header và truy cập vào đường dẫn ")
-	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) throws CustomUserException {
+	public User getUserByToken(@RequestHeader(name = "Authorization", required = true) String bearerToken) {
 		try {
 			String jwt = null;
 
@@ -136,8 +141,7 @@ public class userAPI {
 
 		}
 
-//		return null;
-		throw new CustomUserException("Thông tin Token không chính xác");
+		throw new ErrorException("user đã tồn tại trong hệ thống");
 
 	}
 
