@@ -24,8 +24,8 @@ public class UserService {
 	private IuserRepository repo;
 	@Autowired
 	PasswordEncoder passwordEncoder;
-	@Autowired
-	private JwtUserDetailsService uds;
+	
+	
 	// lấy danh sách user
 	public ParentOutput<User> listAll(int page, int limit, String sortBy, boolean order) {
 //		System.out.println(page +""+ limit);
@@ -57,8 +57,8 @@ public class UserService {
 		// nếu id là null thì tạo moi còn không thì update
 		if (model.getId() == null) {
 			model.setPassword(passwordEncoder.encode(model.getPassword()));
-			// kiểm tra sự tồn tại của user
-			if(uds.loadUserByUsername(model.getPhonenumber())!= null)
+//			 kiểm tra sự tồn tại của user
+			if(repo.findByPhonenumber(model.getPhonenumber())!= null)
 			{
 				
 				return null;
